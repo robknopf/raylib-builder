@@ -1,5 +1,6 @@
 # raylib-builder
 Mostly just a makefile to pull my raylib repo and build desktop and web (emscripten) static libraries. 
+You don't really need to clone this, just grab the [Makefile](https://github.com/robknopf/raylib-builder/blob/main/Makefile)
 
 *I'm doing most of my development on Linux, so I'd be shocked if it worked on other platforms without some tweaks.*
 
