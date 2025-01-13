@@ -1,6 +1,6 @@
 LIB_OUT_DIR := lib
 INCLUDE_OUT_DIR := include
-BUILD_DIR := build
+BUILD_DIR := obj
 RAYLIB_REPO := https://github.com/robknopf/raylib.git
 RAYLIB_INSTALL_DIR := src
 RAYLIB_SRC_DIR := $(RAYLIB_INSTALL_DIR)/src
