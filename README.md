@@ -1,28 +1,91 @@
 # raylib-builder
-Mostly just a makefile to pull my raylib repo and build desktop and web (emscripten) static libraries. The gcc toolchain is required (build-essential?) for desktop, as is emcc for the web build.
 
-(You don't really need to clone this repo.  Just grab the [Makefile](https://github.com/robknopf/raylib-builder/blob/main/Makefile) save it in an empty directory and run `make` )
+A simple `Makefile`-driven builder for stock raylib that produces both desktop and wasm (Emscripten) static libraries, with separate output directories per build type.
 
-*I'm doing most of my development on Linux, so I'd be shocked if it worked on other platforms without some tweaks.*
+Desktop builds use `gcc` (or equivalent toolchain).  
+Web builds use `emcc`/`emar` from Emscripten.
 
-#### Repositories
-* [My fork of raylib](https://github.com/robknopf/raylib.git) ([NOTES](https://github.com/robknopf/raylib/blob/master/NOTES.md)))
-* [Original raylib](https://github.com/raysan5/raylib.git)
+You can use this repo directly, or just copy the [Makefile](https://github.com/robknopf/raylib-builder/blob/main/Makefile) into an empty directory and run `make`.
 
+Built/tested primarily on Linux.
 
-#### Usage
-```shell
-$ make [all|debug|release|web|desktop|clean|clean_repo]
+## Raylib source
+
+This now targets stock raylib:
+
+- [raysan5/raylib](https://github.com/raysan5/raylib)
+
+The Makefile clones raylib into `src/` by default.
+
+## Outputs
+
+Libraries are copied into `lib/`:
+
+- Native release: `lib/libraylib.a`
+- Native debug: `lib/libraylib_d.a`
+- Wasm release: `lib/libraylib.wasm.a`
+- Wasm debug: `lib/libraylib_d.wasm.a`
+
+Build intermediates are kept separate:
+
+- `obj/desktop/debug`
+- `obj/desktop/release`
+- `obj/wasm/debug`
+- `obj/wasm/release`
+
+Headers are copied to `include/`:
+
+- `raylib.h`
+- `raymath.h`
+- `rlgl.h`
+- `rlights.h`
+
+## Usage
+
+### Common targets
+
+```sh
+make [all|debug|release|wasm|desktop|wasm_debug|wasm_release|desktop_debug|desktop_release|clean|clean_repo]
 ```
 
-or, if you are like me and want things crisp and tidy:
-> Note the `raylib` at the end of the git command.  This will clone to a new "raylib" directory.
-```shell
-$ git clone https://github.com/robknopf/raylib-builder.git raylib
-$ cd raylib
-$ make all -j8
+### Updating raylib
+
+Build targets automatically ensure raylib is present and up to date:
+
+- If `src/` is missing, they clone raylib.
+- If `src/` exists, they run `git pull`.
+
+To explicitly update raylib without building:
+
+```sh
+make update_raylib
 ```
 
+Or combine update + build:
 
+```sh
+make update_raylib all
+```
 
-Feel free to fork or submit pull requests.
+### Emscripten preflight (wasm targets)
+
+`wasm_debug` and `wasm_release` run a preflight check before building:
+
+- If `emcc` is on `PATH`, build proceeds.
+- If `EMSDK` is set and `emcc` exists under `$EMSDK/upstream/emscripten/emcc` but is not on `PATH`, the build stops with guidance to run:
+
+```sh
+source $EMSDK/emsdk_env.sh
+```
+
+- If neither is valid, the build stops with a setup hint.
+
+## Quick start
+
+```sh
+git clone https://github.com/robknopf/raylib-builder.git raylib
+cd raylib
+make all -j8
+```
+
+Pull requests are welcome.
