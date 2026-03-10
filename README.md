@@ -80,6 +80,18 @@ source $EMSDK/emsdk_env.sh
 
 - If neither is valid, the build stops with a setup hint.
 
+### Web graphics API override
+
+Wasm builds default to `GRAPHICS_API_OPENGL_ES3` via `RAYLIB_WASM_GRAPHICS` in this repo's `Makefile`.
+
+You can override it at build time for any wasm target (release or debug), e.g.:
+
+```sh
+make wasm_release RAYLIB_WASM_GRAPHICS=GRAPHICS_API_OPENGL_ES2
+```
+
+(or `make wasm_debug ...` etc.)
+
 ## Quick start
 
 ```sh
